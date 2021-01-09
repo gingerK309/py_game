@@ -66,7 +66,7 @@ while running:
     # 6.1 - Set player position and rotation 플레이어 회전
     position = pygame.mouse.get_pos()
     angle = math.atan2(position[1] - (playerpos[1] + 32), position[0] - (playerpos[0] + 26))
-    playerrot = pygame.transform.rotate(player, 360 - angle * 57.29)
+    playerrot = pygame.transform.rotate(player, 360 - angle * 57.29) #57.29 = 180/3.14
     playerpos1 = (playerpos[0] - playerrot.get_rect().width / 2, playerpos[1] - playerrot.get_rect().height / 2)
     screen.blit(playerrot, playerpos1)
     # 6.2 - Draw bullets 총알 생성
@@ -80,7 +80,7 @@ while running:
             bullets.pop(index)
         index+=1
         for projectile in bullets:
-            bull1 = pygame.transform.rotate(bull, 360-projectile[0]*50)
+            bull1 = pygame.transform.rotate(bull, 360-projectile[0]*57.29)
             screen.blit(bull1, (projectile[1]+40, projectile[2]+5))
     # 6.3 - Draw badgers 적 생성
     if badtimer==0:
