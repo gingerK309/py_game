@@ -56,6 +56,8 @@ running = True
 while running: # 이벤트 루프
     fps = clock.tick(60) #초당 프레임 수 설정
     for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
         if event.type == pygame.KEYDOWN: # 키다운 이벤트 확인
             if event.key == pygame.K_LEFT:
                 move_x -=speed
@@ -110,11 +112,13 @@ while running: # 이벤트 루프
 
     count += 1
     pygame.display.update() # 게임 화면 업데이트
+
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            running = False
+            pygame.quit()
             exit(0)
+    pygame.display.update()
 
 
 

@@ -93,6 +93,8 @@ running = True
 while running:
     fps = clock.tick(60)
     for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT: # 캐릭터 왼쪽 이동
                 move_x_left -= speed
@@ -257,3 +259,4 @@ while True:
         if event.type == pygame.QUIT:
             running = False
             exit(0)
+    pygame.display.update()

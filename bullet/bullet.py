@@ -131,7 +131,7 @@ while running:
         screen.blit(health, (health1+8,8))
 
     # 7 - update the screen
-    pygame.display.flip()
+    pygame.display.update()
     fpsClock.tick(FPS)
     # 8 - loop through the events
     for event in pygame.event.get():
@@ -174,6 +174,16 @@ while running:
         playerpos[0]-=5
     elif keys[3]:
         playerpos[0]+=5
+
+    if playerpos[0]<80:
+        playerpos[0] =80
+    elif playerpos[0]>600:
+        playerpos[0]=600
+    if playerpos[1]<40:
+        playerpos[1]=40
+    if playerpos[1]>440:
+        playerpos[1]=440
+
     #10 - Win/Lose check
     if pygame.time.get_ticks()>=90000:
         running=0
@@ -206,10 +216,11 @@ else:
     screen.blit(youwin, (0,0))
     pygame.mixer.music.stop()
     screen.blit(text, textRect)
+
 while 1:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             exit(0)
-    pygame.display.flip()
+    pygame.display.update()
 
