@@ -233,7 +233,7 @@ def game():
             playerpos[1]=440
 
         #10 - Win/Lose check
-        if rstTime - second<=0:
+        if rstTime - second<=0 and healthvalue>0:
             running=0
             exitcode=1
         if healthvalue<=0:
