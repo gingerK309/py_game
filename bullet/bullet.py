@@ -60,24 +60,24 @@ keys = [False, False, False, False]
 #플레이어 위치
 playerpos=[100,220]
 # 3 - Load images
-player = pygame.image.load("resources/images/dude.png")
-grass = pygame.image.load("resources/images/grass.png")
-castle = pygame.image.load("resources/images/castle.png")
-bull = pygame.image.load("resources/images/bullet.png")
-badguyimg1 = pygame.image.load("resources/images/badguy.png")
+player = pygame.image.load("bullet/resources/images/dude.png")
+grass = pygame.image.load("bullet/resources/images/grass.png")
+castle = pygame.image.load("bullet/resources/images/castle.png")
+bull = pygame.image.load("bullet/resources/images/bullet.png")
+badguyimg1 = pygame.image.load("bullet/resources/images/badguy.png")
 badguyimg=badguyimg1
-healthbar = pygame.image.load("resources/images/healthbar.png")
-health = pygame.image.load("resources/images/health.png")
-gameover = pygame.image.load("resources/images/gameover.png")
-youwin = pygame.image.load("resources/images/youwin.png")
+healthbar = pygame.image.load("bullet/resources/images/healthbar.png")
+health = pygame.image.load("bullet/resources/images/health.png")
+gameover = pygame.image.load("bullet/resources/images/gameover.png")
+youwin = pygame.image.load("bullet/resources/images/youwin.png")
 # 3.1 - Load audio
-hit = pygame.mixer.Sound("resources/audio/explode.wav")
-enemy = pygame.mixer.Sound("resources/audio/enemy.wav")
-shoot = pygame.mixer.Sound("resources/audio/shoot.wav")
+hit = pygame.mixer.Sound("bullet/resources/audio/explode.wav")
+enemy = pygame.mixer.Sound("bullet/resources/audio/enemy.wav")
+shoot = pygame.mixer.Sound("bullet/resources/audio/shoot.wav")
 hit.set_volume(0.3)
 enemy.set_volume(0.2)
 shoot.set_volume(0.1)
-pygame.mixer.music.load('resources/audio/bgm.mp3')
+pygame.mixer.music.load('bullet/resources/audio/bgm.mp3')
 pygame.mixer.music.play(-1, 0.0)
 pygame.mixer.music.set_volume(0.25)
 running = 1
@@ -89,7 +89,7 @@ def game():
     badtimer=100
     badtimer1=0
     badguys=[[width,100]]
-    healthvalue=194
+    healthvalue= 194
     rstTime = 60
     starttick = pygame.time.get_ticks()
     global running
@@ -167,8 +167,8 @@ def game():
             screen.blit(badguyimg, badguy)
         # 6.4 - Draw clock
         font = pygame.font.Font(None, 32)
-        second = int((pygame.time.get_ticks() - starttick)/1000%60)
-        survivedtext = font.render(str(0)+":"+str(rstTime - second).zfill(2), True, (0,0,0))
+        elapsed_time = (pygame.time.get_ticks() - starttick)/1000
+        survivedtext = font.render(f'Time: {int(rstTime-elapsed_time)}',True,(0,0,0))
         textRect = survivedtext.get_rect()
         textRect.topright=[width-5,5]
         screen.blit(survivedtext, textRect)
@@ -233,13 +233,13 @@ def game():
             playerpos[1]=440
 
         #10 - Win/Lose check
-        if rstTime - second<=0 and healthvalue>0:
+        if rstTime - elapsed_time<=0 and healthvalue>0:
             running=0
             exitcode=1
         if healthvalue<=0:
             running=0
             exitcode=0
-        if rstTime - second<=0 and healthvalue<=0:
+        if rstTime - elapsed_time<=0 and healthvalue<=0:
             running = 0
             exitcode = 0
         if acc[1]!=0:
