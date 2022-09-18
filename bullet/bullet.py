@@ -31,6 +31,10 @@ acc=[0,0]
 bullets=[]
 width, height = 800, 480
 white = (255,255,255)
+black=(0,0,0)
+red=(255,0,0)
+green=(0,255,0)
+flag = 1
 screen=pygame.display.set_mode((width, height))
 pygame.init()
 pygame.font.init()
@@ -44,6 +48,10 @@ def start():
     pygame.display.flip()
     wait_for_key()
     if pygame.event.get()== pygame.QUIT:
+        global flag
+        global running
+        flag = 0
+        running = 0
         pygame.quit()
         sys.exit(0)
 
@@ -74,8 +82,9 @@ pygame.mixer.music.play(-1, 0.0)
 pygame.mixer.music.set_volume(0.25)
 running = 1
 # 4 - keep looping through
-
+count = 0
 def game():
+    global count
     exitcode = 0
     badtimer=100
     badtimer1=0
@@ -148,6 +157,7 @@ def game():
                 if badrect.colliderect(bullrect):
                     enemy.play()
                     acc[0]+=1
+                    count += 10
                     badguys.pop(index)
                     bullets.pop(index1)
                 index1+=1
@@ -156,12 +166,13 @@ def game():
         for badguy in badguys:
             screen.blit(badguyimg, badguy)
         # 6.4 - Draw clock
-        font = pygame.font.Font(None, 24)
+        font = pygame.font.Font(None, 32)
         second = int((pygame.time.get_ticks() - starttick)/1000%60)
         survivedtext = font.render(str(0)+":"+str(rstTime - second).zfill(2), True, (0,0,0))
         textRect = survivedtext.get_rect()
         textRect.topright=[width-5,5]
         screen.blit(survivedtext, textRect)
+        draw_text(f'count: {count}',36,black,width/2,5)
         # 6.5 - Draw health bar
         screen.blit(healthbar, (5,5))
         for health1 in range(healthvalue):
@@ -237,18 +248,13 @@ def game():
             accuracy=0
     # 11 - Win/lose display
     if exitcode==0:
-        pygame.font.init()
-        font = pygame.font.Font(None, 24)
-        text = font.render("Accuracy: "+str(int(accuracy))+"%", True, (255,0,0))
-        textRect = text.get_rect()
-        textRect.centerx = screen.get_rect().centerx
-        textRect.centery = screen.get_rect().centery+24
+        draw_text(f'Accuarcy: {int(accuracy)}%',36,red,width/2,height*2/4)
+        draw_text(f'Your score: {count}', 36, red, width/2, height*3/5)
         screen.blit(gameover, (0,0))
         pygame.mixer.music.stop()
-        screen.blit(text, textRect)
         draw_text('if you want to restart, press a any key...',32,white,width/2, height*3/4)
         pygame.display.flip()
-        if event.type == pygame.QUIT:
+        if pygame.event.get() == pygame.QUIT:
             running = 0
             pygame.quit()
             sys.exit(0)
@@ -259,22 +265,21 @@ def game():
             playerpos[1]=height/2
             for i in range(4):
                 keys[i] = False
+            acc[0]=0
+            acc[1]=0
+            accuracy =0
+            count=0
             pygame.mixer.music.play(-1, 0.0)
             start()
             
     else:
-        pygame.font.init()
-        font = pygame.font.Font(None, 24)
-        text = font.render("Accuracy: "+str(int(accuracy))+"%", True, (0,255,0))
-        textRect = text.get_rect()
-        textRect.centerx = screen.get_rect().centerx
-        textRect.centery = screen.get_rect().centery+24
+        draw_text(f'Accuarcy: {int(accuracy)}%',36,green,width/2,height*2/4)
+        draw_text(f'Your score: {count}', 36, green, width/2, height*3/5)
         screen.blit(youwin, (0,0))
         pygame.mixer.music.stop()
-        screen.blit(text, textRect)
         draw_text('if you want to restart, press a any key...',32,white,width/2, height*3/4)
         pygame.display.flip()
-        if event.type == pygame.QUIT:
+        if pygame.event.get() == pygame.QUIT:
             running = 0
             pygame.quit()
             sys.exit(0)
@@ -285,14 +290,18 @@ def game():
             playerpos[1]=height/2
             for i in range(4):
                 keys[i] = False
+            acc[0]=0
+            acc[1]=0
+            accuracy =0
+            count=0
             pygame.mixer.music.play(-1, 0.0)
             start()
            
 while running:
     start()
-    game()
+    if flag and running:
+        game()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            print(running)
             pygame.quit()
             sys.exit(0)
