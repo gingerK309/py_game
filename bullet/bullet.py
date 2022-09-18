@@ -1,5 +1,5 @@
 # 1 - Import library
-from multiprocessing.connection import wait
+import sys
 import pygame
 from pygame.locals import *
 import math
@@ -45,7 +45,7 @@ def start():
     wait_for_key()
     if pygame.event.get()== pygame.QUIT:
         pygame.quit()
-        exit(0)
+        sys.exit(0)
 
 #키 입력 체크
 keys = [False, False, False, False]
@@ -176,7 +176,7 @@ def game():
             if event.type==pygame.QUIT:
                 # if it is quit the game
                 pygame.quit()
-                exit(0)
+                sys.exit(0)
             #키 입력 시
             if event.type == pygame.KEYDOWN:
                 if event.key==K_w:
@@ -251,7 +251,7 @@ def game():
         if event.type == pygame.QUIT:
             running = 0
             pygame.quit()
-            exit(0)
+            sys.exit(0)
         else:
             wait_for_key()
             running = 1
@@ -277,7 +277,7 @@ def game():
         if event.type == pygame.QUIT:
             running = 0
             pygame.quit()
-            exit(0)
+            sys.exit(0)
         else:
             wait_for_key()
             running = 1
@@ -287,7 +287,7 @@ def game():
                 keys[i] = False
             pygame.mixer.music.play(-1, 0.0)
             start()
-            
+           
 while running:
     start()
     game()
@@ -295,4 +295,4 @@ while running:
         if event.type == pygame.QUIT:
             print(running)
             pygame.quit()
-            exit(0)
+            sys.exit(0)
