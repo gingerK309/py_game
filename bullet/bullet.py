@@ -1,13 +1,14 @@
-# 1 - Import library
 import sys
 import pygame
 from pygame.locals import *
 import math
 import random
 
-# 2 - 시작 화면 만들기
+
+
 fpsClock = pygame.time.Clock()
 FPS = 60
+
 def wait_for_key():
     waiting = True
     while waiting:
@@ -40,6 +41,8 @@ pygame.init()
 pygame.font.init()
 pygame.display.set_caption('바네사를 지켜라!')
 LIGHTBLUE = (0,155,155,128) 
+
+# 시작 화면 만들기
 def start():
     screen.fill(LIGHTBLUE)
     draw_text('Save the Vanessa!',56, white,width/2, height*2/5)
@@ -55,11 +58,13 @@ def start():
         pygame.quit()
         sys.exit(0)
 
-#키 입력 체크
+# 키 입력 체크
 keys = [False, False, False, False]
-#플레이어 위치
+
+# 플레이어 위치
 playerpos=[100,220]
-# 3 - Load images
+
+# 이미지 로딩
 player = pygame.image.load("bullet/resources/images/dude.png")
 grass = pygame.image.load("bullet/resources/images/grass.png")
 castle = pygame.image.load("bullet/resources/images/castle.png")
@@ -70,7 +75,8 @@ healthbar = pygame.image.load("bullet/resources/images/healthbar.png")
 health = pygame.image.load("bullet/resources/images/health.png")
 gameover = pygame.image.load("bullet/resources/images/gameover.png")
 youwin = pygame.image.load("bullet/resources/images/youwin.png")
-# 3.1 - Load audio
+
+# 오디오 로딩
 hit = pygame.mixer.Sound("bullet/resources/audio/explode.wav")
 enemy = pygame.mixer.Sound("bullet/resources/audio/enemy.wav")
 shoot = pygame.mixer.Sound("bullet/resources/audio/shoot.wav")
@@ -80,8 +86,10 @@ shoot.set_volume(0.1)
 pygame.mixer.music.load('bullet/resources/audio/bgm.mp3')
 pygame.mixer.music.play(-1, 0.0)
 pygame.mixer.music.set_volume(0.25)
+
+
+# 게임 구현
 running = 1
-# 4 - keep looping through
 count = 0
 def game():
     global count
@@ -96,9 +104,9 @@ def game():
     pygame.mixer.init()
     while running:
         badtimer-=1
-        # 5 - clear the screen before drawing it again
+        # 화면 지우기
         screen.fill(0)
-        # 6 - draw the screen elements 잔디 그리기
+        # 이미지로 배경 채우기
         for x in range(int(width/grass.get_width()+1)):
             for y in range(int(height/grass.get_height()+1)):
                 screen.blit(grass,(x*100,y*100))
@@ -108,13 +116,14 @@ def game():
         screen.blit(castle,(10,240))
         screen.blit(castle,(10,345))
 
-        # 6.1 - Set player position and rotation 플레이어 회전
+        # 플레이어 회전
         position = pygame.mouse.get_pos()
         angle = math.atan2(position[1] - (playerpos[1] + 32), position[0] - (playerpos[0] + 26))
         playerrot = pygame.transform.rotate(player, 360 - angle * 57.29) #57.29 = 180/3.14
         playerpos1 = (playerpos[0] - playerrot.get_rect().width / 2, playerpos[1] - playerrot.get_rect().height / 2)
         screen.blit(playerrot, playerpos1)
-        # 6.2 - Draw bullets 총알 생성
+        
+        # 총알 생성
         for bullet in bullets:
             index=0
             velx=math.cos(bullet[0])*10
@@ -127,7 +136,8 @@ def game():
             for projectile in bullets:
                 bull1 = pygame.transform.rotate(bull, 360-projectile[0]*57.29)
                 screen.blit(bull1, (projectile[1]+40, projectile[2]+5))
-        # 6.3 - Draw badgers 적 생성
+        
+        # 적 생성
         if badtimer==0:
             badguys.append([width, random.randint(50,430)])
             badtimer=100-(badtimer1*2)
@@ -140,7 +150,7 @@ def game():
             if badguy[0]<-64:
                 badguys.pop(index)
             badguy[0]-=7
-            # 6.3.1 - Attack castle
+            # 성 피격시
             badrect=pygame.Rect(badguyimg.get_rect())
             badrect.top=badguy[1]
             badrect.left=badguy[0]
@@ -148,7 +158,7 @@ def game():
                 hit.play()
                 healthvalue -= random.randint(5,20)
                 badguys.pop(index)
-            #6.3.2 - Check for collisions
+            # 충돌 체크
             index1=0
             for bullet in bullets:
                 bullrect=pygame.Rect(bull.get_rect())
@@ -161,11 +171,12 @@ def game():
                     badguys.pop(index)
                     bullets.pop(index1)
                 index1+=1
-            # 6.3.3 - Next bad guy
+            # 다음 적 생성
             index+=1
         for badguy in badguys:
             screen.blit(badguyimg, badguy)
-        # 6.4 - Draw clock
+        
+        # 타이머 그리기
         font = pygame.font.Font(None, 32)
         elapsed_time = (pygame.time.get_ticks() - starttick)/1000
         survivedtext = font.render(f'Time: {int(rstTime-elapsed_time)}',True,(0,0,0))
@@ -173,22 +184,22 @@ def game():
         textRect.topright=[width-5,5]
         screen.blit(survivedtext, textRect)
         draw_text(f'count: {count}',36,black,width/2,5)
-        # 6.5 - Draw health bar
+        
+        # 체력바 그리기
         screen.blit(healthbar, (5,5))
         for health1 in range(healthvalue):
             screen.blit(health, (health1+8,8))
 
-        # 7 - update the screen
+        # 화면 업데이트
         pygame.display.update()
         fpsClock.tick(FPS)
-        # 8 - loop through the events
         for event in pygame.event.get():
-            # check if the event is the X button
+            # 종료 버튼 눌렀을 때
             if event.type==pygame.QUIT:
-                # if it is quit the game
+                # 게임 종료 시
                 pygame.quit()
                 sys.exit(0)
-            #키 입력 시
+            # 키 입력 시
             if event.type == pygame.KEYDOWN:
                 if event.key==K_w:
                     keys[0]=True
@@ -198,7 +209,7 @@ def game():
                     keys[2]=True
                 elif event.key==K_d:
                     keys[3]=True
-            #키 입력 끝남
+            # 키 입력 끝남
             if event.type == pygame.KEYUP:
                 if event.key==pygame.K_w:
                     keys[0]=False
@@ -213,7 +224,8 @@ def game():
                 position = pygame.mouse.get_pos()
                 acc[1] += 1
                 bullets.append ([math.atan2 (position [1]-(playerpos1 [1] +32), position [0]-(playerpos1 [0] +26)), playerpos1 [0] + 32, playerpos1 [1] +32])
-        # 9 - Move player
+        
+        # 캐릭터 이동
         if keys[0]:
             playerpos[1]-=5
         elif keys[2]:
@@ -232,7 +244,7 @@ def game():
         if playerpos[1]>440:
             playerpos[1]=440
 
-        #10 - Win/Lose check
+        # 게임 오버 체크
         if rstTime - elapsed_time<=0 and healthvalue>0:
             running=0
             exitcode=1
@@ -246,7 +258,8 @@ def game():
             accuracy=acc[0]*1.0/acc[1]*100
         else:
             accuracy=0
-    # 11 - Win/lose display
+    
+    # 결과 화면 출력
     if exitcode==0:
         draw_text(f'Accuarcy: {int(accuracy)}%',36,red,width/2,height*2/4)
         draw_text(f'Your score: {count}', 36, red, width/2, height*3/5)
